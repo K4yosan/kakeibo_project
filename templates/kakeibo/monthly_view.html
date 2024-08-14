@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ year }}年{{ month }}月の収支</h2>
+    <h3>収入</h3>
+    <ul>
+        {% for income in incomes %}
+            <li>{{ income.date }} - {{ income.category }} - {{ income.amount }}円</li>
+        {% endfor %}
+    </ul>
+    <h3>支出</h3>
+    <ul>
+        {% for expense in expenses %}
+            <li>{{ expense.date }} - {{ expense.category }} - {{ expense.amount }}円</li>
+        {% endfor %}
+    </ul>
+    <h4>総収入: {{ total_income }}円</h4>
+    <h4>総支出: {{ total_expense }}円</h4>
+    <h4>総合計: {{ net_total }}円</h4>
+</div>
+{% endblock %}

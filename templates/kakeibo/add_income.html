@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}収入を追加 - 家計簿{% endblock %}
+
+{% block content %}
+<div class="row">
+
+    <!-- 年月選択フォーム -->
+    <div class="col-md-12 mb-4">
+        <form method="get" action="{% url 'add_income' %}">
+            <div class="row">
+                <div class="col-sm-2">
+                    <label for="year" class="form-label">年:</label>
+                    <select name="year" id="year" class="form-control">
+                        {% for y in years %}
+                            <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="col-sm-2">
+                    <label for="month" class="form-label">月:</label>
+                    <select name="month" id="month" class="form-control">
+                        {% for m in months %}
+                            <option value="{{ m }}" {% if m == month %}selected{% endif %}>{{ m }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="col-sm-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary">表示</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- 左側のカラム：収入追加フォーム -->
+    <div class="col-md-6">
+        <h2 class="mb-4">収入を追加</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="date" class="form-label">日付</label>
+                <input type="date" class="form-control" id="date" name="date" required>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">カテゴリ</label>
+                <input type="text" class="form-control" id="category" name="category" required>
+            </div>            
+            <div class="mb-3">
+                <label for="description" class="form-label">説明</label>
+                <textarea class="form-control" id="description" name="description"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="amount" class="form-label">金額</label>
+                <input type="number" class="form-control" id="amount" name="amount" required>
+            </div>
+            <button type="submit" class="btn btn-success mb-4">追加</button>
+        </form>
+    </div>
+
+    <!-- 右側のカラム：収入一覧 -->
+    <div class="col-md-6">
+        <h2 class="mb-4">{{ month_name }} {{ year }} の収入一覧</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>日付</th>
+                    <th>カテゴリ</th>
+                    <th>説明</th>
+                    <th>金額</th>
+                    <th>アクション</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for income in incomes %}
+                <tr>
+                    <td>{{ income.date }}</td>
+                    <td>{{ income.category }}</td>
+                    <td>{{ income.description|default:"なし" }}</td>
+                    <td>{{ income.amount|floatformat:0 }}</td>
+                    <td>
+                        <form action="{% url 'delete_income' income.pk %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">削除</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

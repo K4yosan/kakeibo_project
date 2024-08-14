@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">収支と総合計</h2>
+
+    <!-- 年月選択フォーム -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <form method="get" action="{% url 'index' %}">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <label for="year">年:</label>
+                        <select name="year" id="year" class="form-control">
+                            {% for y in years %}
+                                <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-sm-3">
+                        <label for="month">月:</label>
+                        <select name="month" id="month" class="form-control">
+                            {% for m in months %}
+                                <option value="{{ m }}" {% if m == month %}selected{% endif %}>{{ m }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-sm-3">
+                        <button type="submit" class="btn btn-primary mt-4">表示</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- 収入のカラム -->
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">収入一覧</h3>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for income in incomes %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ income.date }} - {{ income.category }} - {{ income.amount|floatformat:0 }}円
+                            {% if income.description %}
+                                ({{ income.description }})
+                            {% endif %}
+                            <a href="{% url 'delete_income' income.id %}?year={{ year }}&month={{ month }}" class="btn btn-danger btn-sm">削除</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="card-body">
+                    <h4 class="mb-4">総収入: {{ total_income|floatformat:0 }}円</h4>
+                    <a href="{% url 'add_income' %}" class="btn btn-success">収入を追加</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 支出のカラム -->
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">支出一覧</h3>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for expense in expenses %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ expense.date }} - {{ expense.category }} - {{ expense.amount|floatformat:0 }}円
+                            {% if expense.description %}
+                                ({{ expense.description }})
+                            {% endif %}
+                            <a href="{% url 'delete_expense' expense.id %}" class="btn btn-danger btn-sm">削除</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="card-body">
+                    <h4 class="mb-4">総支出: {{ total_expense|floatformat:0 }}円</h4>
+                    <a href="{% url 'add_expense' %}" class="btn btn-primary">支出を追加</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 総合計のカラム -->
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <h3 class="mb-3">総合計</h3>
+            <div class="alert alert-info">
+                <h4>総収入から総支出を引いた合計: {{ net_total|floatformat:0 }}円</h4>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

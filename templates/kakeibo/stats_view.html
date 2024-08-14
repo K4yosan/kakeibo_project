@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}収支統計 - 家計簿{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">収支統計</h2>
+    
+    <!-- 年月選択フォーム -->
+    <form method="get" action="{% url 'stats_view' %}">
+        <div class="row mb-4">
+            <div class="col-sm-3">
+                <label for="year" class="form-label">年:</label>
+                <select name="year" id="year" class="form-control">
+                    {% for y in years %}
+                        <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-sm-3">
+                <label for="month">月:</label>
+                <select name="month" id="month" class="form-control">
+                    {% for m in months %}
+                        <option value="{{ m }}" {% if m == month %}selected{% endif %}>{{ m }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-sm-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary">表示</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+        <!-- カテゴリ別収入 -->
+        <div class="col-md-6 mb-4">
+            <h3 class="mb-3">カテゴリ別収入</h3>
+            <canvas id="incomeCategoriesChart" width="400" height="400"></canvas>
+        </div>
+        
+        <!-- カテゴリ別支出 -->
+        <div class="col-md-6 mb-4">
+            <h3 class="mb-3">カテゴリ別支出</h3>
+            <canvas id="expenseCategoriesChart" width="400" height="400"></canvas>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- 月別収入 -->
+        <div class="col-md-6 mb-4">
+            <h3 class="mb-3">月別収入</h3>
+            <canvas id="monthlyIncomesChart" width="400" height="400"></canvas>
+        </div>
+
+        <!-- 年別収入 -->
+        <div class="col-md-6 mb-4">
+            <h3 class="mb-3">年別収入</h3>
+            <canvas id="yearlyIncomesChart" width="400" height="400"></canvas>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- 月別支出 -->
+        <div class="col-md-6 mb-4">
+            <h3 class="mb-3">月別支出</h3>
+            <canvas id="monthlyExpensesChart" width="400" height="400"></canvas>
+        </div>
+
+        <!-- 年別支出 -->
+        <div class="col-md-6 mb-4">
+            <h3 class="mb-3">年別支出</h3>
+            <canvas id="yearlyExpensesChart" width="400" height="400"></canvas>
+        </div>
+    </div>
+</div>
+
+{% load static %}
+    <!-- Bootstrap JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/script.js' %}"></script>
+{% endblock %}
